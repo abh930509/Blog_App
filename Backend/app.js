@@ -34,12 +34,13 @@ app.get('/',(req,res)=>{
 app.use('/api/users', userRouter);
 app.use('/api/users',postRouter);
 
-
 const PORT = process.env.PORT || 8080;
 
-connectDB().then(() => {
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log("Server is running on port", PORT);
-  });
+connectDB()
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => console.error("MongoDB Error:", err));
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Server is running on port", PORT);
 });
 

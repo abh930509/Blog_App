@@ -12,16 +12,24 @@ import cors from 'cors';
 const app  = express();
 
 
+const cors = require("cors");
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:8081",
-      "http://localhost:19006",
-      "http://localhost:3000"
-    ],
-    credentials: true
+    origin: "http://localhost:8081",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
+
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "None"
+});
+
+app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

@@ -21,11 +21,7 @@ app.use(
   })
 );
 
-res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "None"
-});
+
 
 app.options("*", cors());
 app.use(express.json());

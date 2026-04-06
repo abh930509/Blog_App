@@ -12,8 +12,6 @@ import cors from 'cors';
 const app  = express();
 
 
-const cors = require("cors");
-
 app.use(
   cors({
     origin: "http://localhost:8080",

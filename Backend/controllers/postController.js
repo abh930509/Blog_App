@@ -90,8 +90,10 @@ export async function createPostController(req,res) {
 export async function allPostsController(req,res) {
      
     try {
-        const Allposts = await PostModel.find()
-        .sort({ createdAt: -1 });
+
+      const Allposts = await PostModel.find()
+  .populate("author", "name email profilePic")
+  .sort({ createdAt: -1 });
 
         if(!Allposts){
             return res.status(400).json({

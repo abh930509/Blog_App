@@ -161,6 +161,7 @@ export async function  mypostsController(req,res) {
 export async function  updatePostController(req,res) {
     try {
         const {postId} = req.params;
+          const userId =req.userId;
         
         const {title,content} = req.body;
         
@@ -210,7 +211,9 @@ export async function  updatePostController(req,res) {
             error:false,
             success:true,
             data:{
-                updatedPost
+                updatedPost,
+                  userId,
+                  postId
             }
         })
     } catch (error) {

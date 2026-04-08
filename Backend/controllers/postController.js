@@ -96,7 +96,7 @@ export async function allPostsController(req,res) {
 
         if(limit>10) limit =10;
 
-        let query ={];
+        let query ={};;
 
         if(cursor){
             query._id ={$lt :cursor}

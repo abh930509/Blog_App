@@ -91,9 +91,22 @@ export async function allPostsController(req,res) {
      
     try {
 
-      const Allposts = await PostModel.find()
+        const cursor = req.query.cursor;
+        let limit = parseInt(req.query.limit )|| 5;
+
+        if(limit>10) limit =10;
+
+        let query ={];
+
+        if(cursor){
+            query._id ={$lt :cursor}
+        }
+
+      const Allposts = await PostModel.find(query)
   .populate("author", "name email profilePic")
-  .sort({ createdAt: -1 });
+  .sort({ createdAt: -1 }).limit(limit);
+
+        const nextCursor = Allposts.length ?Allposts[Allposts.length -1]._id:null;
 
         if(!Allposts){
             return res.status(400).json({
@@ -108,7 +121,9 @@ export async function allPostsController(req,res) {
             error:false,
             success:true,
             data:{
-                Allposts
+                Allposts,
+                nextCursor,
+                hasMore:Allposts.length === limit
             }
         })
         

@@ -92,7 +92,7 @@ export async function allPostsController(req,res) {
     try {
 
         const cursor = req.query.cursor;
-        let limit = parseInt(req.query.limit )|| 5;
+        let limit = parseInt(req.query.limit )|| 20;
 
         if(limit>10) limit =10;
 

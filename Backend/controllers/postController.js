@@ -145,7 +145,9 @@ export async function  mypostsController(req,res) {
     try {
 
         const userId =req.userId;
-        const myAllPosts = await PostModel.find({author:userId});
+        const myAllPosts = await PostModel.find({author:userId})
+             .populate("author", "name email ")
+  .sort({ createdAt: -1 });
 
         if(!myAllPosts){
             return res.status(400).json({
@@ -161,6 +163,52 @@ export async function  mypostsController(req,res) {
             success:true,
             data:{
                 myAllPosts
+            }
+        })
+
+    } catch (error) {
+        return res.status(400).json({
+            message:error.message||error,
+            error:true,
+            success:false
+        })
+        
+    }
+    
+}
+
+
+export async function  UserProfileController(req,res) {
+    try { 
+        const userId= req.params.id;
+
+       
+        const myAllPosts = await PostModel.find({author:userId});
+        const userData =await UserModel.findById(userId);
+
+        if(myAllPosts.length === 0){
+            return res.status(400).json({
+                messsage:'No Post found ,Please create your Posts.',
+                error:true,
+                success:false
+            })
+        }
+
+        if(!userData){
+            return res.status(400).json({
+                message:"User data is not found",
+                error:true,
+                success:false
+            })
+        }
+
+        return res.json({
+            message:"Your all posts find successfully.",
+            error:false,
+            success:true,
+            data:{
+                myAllPosts,
+                userData
             }
         })
 

@@ -188,7 +188,9 @@ export async function  UserProfileController(req,res) {
 
         if(limit>10) limit =10;
 
-        let query ={};;
+let query = {
+   author: userId
+};
 
         if(cursor){
             query._id ={$lt :cursor}
@@ -236,6 +238,7 @@ console.log("HasMore:", hasMore);
             data:{
                 myAllPosts,
                 userData,
+                nextCursor,
                  hasMore:myAllPosts.length === limit
             }
         })

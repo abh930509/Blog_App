@@ -183,10 +183,25 @@ export async function  UserProfileController(req,res) {
     try { 
         const {userId}= req.params;
         console.log(userId);
+         const cursor = req.query.cursor;
+        let limit = parseInt(req.query.limit )|| 20;
+
+        if(limit>10) limit =10;
+
+        let query ={};;
+
+        if(cursor){
+            query._id ={$lt :cursor}
+        }
+
+      const Allposts = await PostModel.find(query)
 
        
-        const myAllPosts = await PostModel.find({author:userId});
+        const myAllPosts = await PostModel.find({author:userId})
+        .sort({ createdAt: -1 }).limit(limit);
         const userData =await UserModel.findById(userId);
+
+        
 
         if(!myAllPosts){
             return res.status(400).json({
@@ -204,13 +219,16 @@ export async function  UserProfileController(req,res) {
             })
         }
 
+         const nextCursor = Allposts.length ?Allposts[Allposts.length -1]._id:null;
+
         return res.json({
             message:"Your all posts find successfully.",
             error:false,
             success:true,
             data:{
                 myAllPosts,
-                userData
+                userData,
+                 hasMore:Allposts.length === limit
             }
         })
 

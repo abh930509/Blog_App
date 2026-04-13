@@ -219,7 +219,7 @@ export async function  UserProfileController(req,res) {
             })
         }
 
-         const nextCursor = myAllposts.length ?myAllposts[myAllposts.length -1]._id:null;
+         const nextCursor = myAllPosts.length ?myAllPosts[myAllPosts.length -1]._id:null;
 
         return res.json({
             message:"Your all posts find successfully.",
@@ -228,7 +228,7 @@ export async function  UserProfileController(req,res) {
             data:{
                 myAllPosts,
                 userData,
-                 hasMore:myAllposts.length === limit
+                 hasMore:myAllPosts.length === limit
             }
         })
 

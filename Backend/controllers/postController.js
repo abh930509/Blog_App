@@ -228,7 +228,7 @@ console.log("Query:", query);
 console.log("Returned Posts:", myAllPosts.length);
 
         console.log("Sending Cursor:", cursor);
-console.log("HasMore:", hasMore);
+
 
         
         return res.json({

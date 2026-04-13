@@ -4,7 +4,7 @@ import auth from '../middleware/auth.js';
 import upload  from "../middleware/multer.js";
 
 import { registerUserController,loginUserController,logoutController,updateUserController,refreshToken } from "../controllers/userController.js";
-import {allPostsController,mypostsController,createPostController,updatePostController,getPostController,deletePostController} from "../controllers/postController.js"
+import {allPostsController,mypostsController,createPostController,updatePostController,getPostController,deletePostController,UserProfileController} from "../controllers/postController.js"
 
 
 const userRouter =Router();

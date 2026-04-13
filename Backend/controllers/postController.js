@@ -182,6 +182,7 @@ export async function  mypostsController(req,res) {
 export async function  UserProfileController(req,res) {
     try { 
         const userId= req.params.id;
+        console.log(userId);
 
        
         const myAllPosts = await PostModel.find({author:userId});

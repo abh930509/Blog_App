@@ -187,7 +187,7 @@ export async function  UserProfileController(req,res) {
         const myAllPosts = await PostModel.find({author:userId});
         const userData =await UserModel.findById(userId);
 
-        if(myAllPosts.length === 0){
+        if(!myAllPosts){
             return res.status(400).json({
                 messsage:'No Post found ,Please create your Posts.',
                 error:true,

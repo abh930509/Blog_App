@@ -221,6 +221,14 @@ export async function  UserProfileController(req,res) {
 
          const nextCursor = myAllPosts.length ?myAllPosts[myAllPosts.length -1]._id:null;
 
+        console.log("Cursor:", cursor);
+console.log("Query:", query);
+console.log("Returned Posts:", myAllPosts.length);
+
+        console.log("Sending Cursor:", cursor);
+console.log("HasMore:", hasMore);
+
+        
         return res.json({
             message:"Your all posts find successfully.",
             error:false,

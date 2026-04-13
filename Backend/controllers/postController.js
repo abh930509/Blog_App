@@ -181,7 +181,7 @@ export async function  mypostsController(req,res) {
 
 export async function  UserProfileController(req,res) {
     try { 
-        const userId= req.params.id;
+        const {userId}= req.params;
         console.log(userId);
 
        

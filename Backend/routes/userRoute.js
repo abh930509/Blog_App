@@ -16,6 +16,7 @@ userRouter.put('/updateuser',auth,updateUserController);
 userRouter.post('/createpost',auth,upload.array("photos",12),createPostController);
 userRouter.get('/allposts',allPostsController);
 userRouter.get('/myposts',auth,mypostsController);
+userRouter.get('/userProfile/:userId',auth,UserProfileController);
 userRouter.put('/updatepost/:postId',auth,upload.array("photos",12),updatePostController);
 userRouter.get('/getpost/:postId',auth,getPostController);
 userRouter.delete('/deletepost/:postId',auth,deletePostController);

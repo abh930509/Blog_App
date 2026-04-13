@@ -194,10 +194,10 @@ export async function  UserProfileController(req,res) {
             query._id ={$lt :cursor}
         }
 
-      const Allposts = await PostModel.find(query)
+
 
        
-        const myAllPosts = await PostModel.find({author:userId})
+        const myAllPosts = await PostModel.find(query)
         .sort({ createdAt: -1 }).limit(limit);
         const userData =await UserModel.findById(userId);
 

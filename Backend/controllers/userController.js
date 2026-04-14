@@ -184,7 +184,7 @@ export async function logoutController(req,res) {
 export async function updateUserController(req,res) {
     try {
         const userId =req.userId;
-        const {name,mobile,password}= req.body
+        const {name,mobile,email,password}= req.body
 
         let hashedPassword =""
 
@@ -195,7 +195,8 @@ export async function updateUserController(req,res) {
 
         const updateUser = await UserModel.updateOne({_id:userId},{
             ...(name && {name :name}),
-            ...(mobile,{mobile:mobile}),
+            ...(mobile && {mobile:mobile}),
+            ...(email && {email:email}),
             ...(password && {password:hashedPassword})
         })
 

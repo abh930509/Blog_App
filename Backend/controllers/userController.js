@@ -221,7 +221,7 @@ export async function updateUserController(req,res) {
 
 
 
-export async function GetUserController(req, res) => {
+export async function GetUserController(req, res){
   try {
     const userId= req.userId;
     const user = await User.findById(userId).select("-password");

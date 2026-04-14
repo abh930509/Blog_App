@@ -219,6 +219,36 @@ export async function updateUserController(req,res) {
     
 }
 
+
+
+export async function GetUserController(req, res) => {
+  try {
+    const userId= req.userId;
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+
+  } catch (error) {
+    console.log("Get User Error", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+
+
 //refresh Token after access token expired
 
 export async function  refreshToken(req,res) {

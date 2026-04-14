@@ -13,6 +13,7 @@ userRouter.post('/signup',registerUserController);
 userRouter.post('/signin',loginUserController);
 userRouter.get('/logout',auth,logoutController);
 userRouter.put('/updateuser',auth,updateUserController);
+userRouter.get('/getuser',auth,GetUserController);
 userRouter.post('/createpost',auth,upload.array("photos",12),createPostController);
 userRouter.get('/allposts',allPostsController);
 userRouter.get('/myposts',auth,mypostsController);

@@ -204,7 +204,8 @@ export async function updateUserController(req,res) {
             error:false,
             success:true,
             data:{
-                updateUser
+                updateUser,
+                name,
             }
         })
     } catch (error) {

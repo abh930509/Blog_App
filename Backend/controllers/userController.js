@@ -16,10 +16,10 @@ export async function registerUserController(req,res) {
             })
         }
 
-        const {name, email, password} =req.body;
-        if(!name || !email || !password){
+        const {name, email,mobile, password} =req.body;
+        if(!name || !email ||!mobile || !password){
             return res.status(400).json({
-                message:'provide name, email and password.',
+                message:'provide name, email ,mobile and password.',
                 error:true,
                 success:false
             })
@@ -41,6 +41,7 @@ export async function registerUserController(req,res) {
         const payLoad ={
             name,
             email,
+            mobile,
             password:hashedPassword
         };
 

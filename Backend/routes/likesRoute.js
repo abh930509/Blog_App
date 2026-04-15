@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import { ToggleLikeController,getLikesController,myLikedPosts } from '../controllers/likesController.js';
-
+import auth from '../middleware/auth.js';
 const likeRouter =Router();
 
 likeRouter.post("/like/:postId" ,auth,ToggleLikeController); // likes and unlike toggle route

@@ -14,14 +14,11 @@ const app  = express();
 
 app.use(
   cors({
-    origin: "http://localhost:8080",
-    credentials: true,
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
   })
 );
-
-
-
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -38,11 +35,9 @@ app.use('/api/users',postRouter);
 
 const PORT = process.env.PORT || 8080;
 
-connectDB()
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error("MongoDB Error:", err));
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log("Server is running on port", PORT);
+connectDB().then(() => {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log("Server is running on port", PORT);
+  });
 });
 

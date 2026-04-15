@@ -146,9 +146,7 @@ export async function  mypostsController(req,res) {
     try {
 
         const userId =req.userId;
-        const myAllPosts = await PostModel.find({author:userId})
-             .populate("author", "name email ")
-  .sort({ createdAt: -1 });
+        const myAllPosts = await PostModel.find({author:userId});
 
         if(!myAllPosts){
             return res.status(400).json({
@@ -164,82 +162,6 @@ export async function  mypostsController(req,res) {
             success:true,
             data:{
                 myAllPosts
-            }
-        })
-
-    } catch (error) {
-        return res.status(400).json({
-            message:error.message||error,
-            error:true,
-            success:false
-        })
-        
-    }
-    
-}
-
-
-export async function  UserProfileController(req,res) {
-    try { 
-        const {userId}= req.params;
-        console.log(userId);
-         const cursor = req.query.cursor;
-        let limit = parseInt(req.query.limit )|| 20;
-
-        if(limit>10) limit =10;
-
-let query = {
-   author: userId
-};
-
-        if(cursor){
-            query._id ={$lt :cursor}
-        }
-
-
-
-       
-        const myAllPosts = await PostModel.find(query)
-        .sort({ createdAt: -1 }).limit(limit);
-        const userData =await UserModel.findById(userId);
-
-        
-
-        if(!myAllPosts){
-            return res.status(400).json({
-                messsage:'No Post found ,Please create your Posts.',
-                error:true,
-                success:false
-            })
-        }
-
-        if(!userData){
-            return res.status(400).json({
-                message:"User data is not found",
-                error:true,
-                success:false
-            })
-        }
-
-         const nextCursor = myAllPosts.length ?myAllPosts[myAllPosts.length -1]._id:null;
-
-        console.log("Cursor:", cursor);
-console.log("Query:", query);
-console.log("Returned Posts:", myAllPosts.length);
-
-        console.log("Sending Cursor:", cursor);
-
-
-        
-        return res.json({
-            message:"Your all posts find successfully.",
-            error:false,
-            success:true,
-            data:{
-                myAllPosts,
-                userData,
-                nextCursor,
-                 hasMore:myAllPosts.length === limit
             }
         })
 
@@ -307,9 +229,7 @@ export async function  updatePostController(req,res) {
             error:false,
             success:true,
             data:{
-                updatedPost,
-                  userId,
-                  postId
+                updatedPost
             }
         })
     } catch (error) {
@@ -326,7 +246,6 @@ export async function  updatePostController(req,res) {
 export async function  getPostController(req,res) {
     try {
         const {postId} =req.params;
-          const userId = req.userId;
 
         if(!postId){
             return res.status(400).json({
@@ -372,6 +291,7 @@ export async function  getPostController(req,res) {
 export async function deletePostController(req,res) {
     try {
     const {postId} = req.params;
+    
     if(!postId){
         return res.status(400).json({
             message:'Post Id is not found',
@@ -387,7 +307,8 @@ export async function deletePostController(req,res) {
         error:false,
         success:true,
         data:{
-            deletedpost
+            deletedpost,
+            postId
         }
     })
         

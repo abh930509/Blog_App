@@ -48,11 +48,27 @@ export async function registerUserController(req,res) {
         const newUser = new UserModel(payLoad);
         const savedUser = await newUser.save();
 
+         const accessToken = await generatedAccessToken(user._id);
+    const refreshToken = await generatedrefreshToken(user._id);
+
+    const cookieOption ={
+        httpOnly:true,
+        secure:true,
+        sameSite:"None"
+    };
+
+    res.cookie("accessToken",accessToken,cookieOption);
+    res.cookie("refreshToken",refreshToken,cookieOption);
+
         return res.json({
             message:'User registered Successfully.',
             error:false,
             success:true,
-            data:savedUser
+            data:{
+                savedUser,
+                accessToken,
+                refreshToken
+            }
         })
     } catch (error) {
         return res.status(500).json({

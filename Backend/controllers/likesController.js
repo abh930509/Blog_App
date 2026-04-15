@@ -40,7 +40,9 @@ export async function ToggleLikeController(req,res) {
             error:false,
             success:true,
             data:{
-                updatedPost
+                updatedPost,
+                likes:Post.Likes.length,
+               liked :isAlreadyLiked
             }
         })
         

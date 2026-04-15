@@ -1,4 +1,4 @@
-import { application, Router } from "express";
+import {Router } from "express";
 import auth from '../middleware/auth.js';
 
 import upload  from "../middleware/multer.js";

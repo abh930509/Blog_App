@@ -6,7 +6,9 @@ import cookieParser from 'cookie-parser';
 import connectDB from './config/connectDB.js';
 import userRouter from './routes/userRoute.js';
 import postRouter from './routes/postRoute.js';
+import commentRouter from './routes/commentRoute.js';
 import cors from 'cors';
+import likeRouter from './routes/likesRoute.js';
 
 
 const app  = express();
@@ -30,8 +32,10 @@ app.use(cookieParser());
 app.get('/',(req,res)=>{
     res.send('Api is running smoothly');
 })
-app.use('/api/users', userRouter);
-app.use('/api/users',postRouter);
+app.use('/api', userRouter);
+app.use('/api',postRouter);
+app.use('/api',commentRouter);
+app.use("/api",likeRouter);
 
 const PORT = process.env.PORT || 8080;
 

@@ -246,6 +246,7 @@ export async function  updatePostController(req,res) {
 export async function  getPostController(req,res) {
     try {
         const {postId} =req.params;
+        const userId =req.userId;
 
         if(!postId){
             return res.status(400).json({

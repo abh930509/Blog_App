@@ -112,7 +112,7 @@ export async function allPostsController(req,res) {
   .populate("author", "name email profilePic")
   .sort({ createdAt: -1 }).limit(limit).lean();
 
-        console.log(Allposts);
+        
 
         const nextCursor = Allposts.length ?Allposts[Allposts.length -1]._id:null;
 

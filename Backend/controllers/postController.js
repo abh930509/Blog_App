@@ -121,6 +121,9 @@ export async function allPostsController(req,res) {
         
         const updatedPosts = Allposts.map(post => ({
   ...post,
+            console.log("Post Likes:", post.Likes);
+  console.log("userId:", userId);
+
    liked: post.Likes?.some(id => id?.toString() === userId?.toString()),
   likesCount: post?.Likes?.length
 }));

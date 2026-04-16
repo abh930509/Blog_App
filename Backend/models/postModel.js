@@ -30,10 +30,7 @@ const Post = new mongoose.Schema({
             ref:"User"
         }
     ],
-     Liked:{
-        type:Boolean,
-
-    },
+   
     Comments:[
         {
             type:mongoose.Schema.Types.ObjectId,

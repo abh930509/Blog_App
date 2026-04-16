@@ -94,6 +94,7 @@ export async function allPostsController(req,res) {
 
         const cursor = req.query.cursor;
         let limit = parseInt(req.query.limit )|| 20;
+        const userId =req.userId;
 
         if(limit>10) limit =10;
 

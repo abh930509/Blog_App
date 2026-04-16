@@ -3,7 +3,7 @@ import PostModel from "../models/postModel.js";
 
 export async function ToggleLikeController(req,res) {
     try {
-        
+         
         const userId =req.userId;
         const {postId} = req.params;
 
@@ -25,11 +25,10 @@ export async function ToggleLikeController(req,res) {
             })
         }
 
-        const isAlreadyLiked = Post.Likes.includes(userId);
-        console.log(isAlreadyLiked);
+        const isAlreadyLiked = Post.Likes.some((id) => id.toString() === userId.toString());
          
         if(isAlreadyLiked){
-           Post.Likes.pull(userId);
+           Post.Likes = Post.Likes.filter((id) => id.toString() !== userId.toString());
         }else{
             Post.Likes.push(userId);
         }
@@ -42,9 +41,8 @@ export async function ToggleLikeController(req,res) {
             success:true,
             data:{
                 updatedPost,
-                likes:updatedPost.Likes.length,
-                 liked: !isAlreadyLiked,
-
+                liked: !isAlreadyLiked,
+                likes: updatedPost.Likes.length
             }
         })
         

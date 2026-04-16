@@ -95,6 +95,8 @@ export async function allPostsController(req,res) {
         const cursor = req.query.cursor;
         let limit = parseInt(req.query.limit )|| 20;
         const userId =req.userId;
+        console.log(userId);
+        
 
         if(limit>10) limit =10;
 
@@ -107,6 +109,8 @@ export async function allPostsController(req,res) {
       const Allposts = await PostModel.find(query)
   .populate("author", "name email profilePic")
   .sort({ createdAt: -1 }).limit(limit).lean();
+
+        console.log(Allposts);
 
         const nextCursor = Allposts.length ?Allposts[Allposts.length -1]._id:null;
 
@@ -121,9 +125,7 @@ export async function allPostsController(req,res) {
         
         const updatedPosts = Allposts.map(post => ({
   ...post,
-            console.log("Post Likes:", post.Likes);
-  console.log("userId:", userId);
-
+        
    liked: post.Likes?.some(id => id?.toString() === userId?.toString()),
   likesCount: post?.Likes?.length
 }));

@@ -105,7 +105,7 @@ export async function allPostsController(req,res) {
 
       const Allposts = await PostModel.find(query)
   .populate("author", "name email profilePic")
-  .sort({ createdAt: -1 }).limit(limit);
+  .sort({ createdAt: -1 }).limit(limit).lean();
 
         const nextCursor = Allposts.length ?Allposts[Allposts.length -1]._id:null;
 
@@ -117,12 +117,21 @@ export async function allPostsController(req,res) {
             })
         }
 
+        
+        const updatedPosts = Allposts.map(post => ({
+  ...post,
+  liked: post.Likes.includes(userId),
+  likesCount: post.Likes.length
+}));
+
+        
+
         return res.json({
             message:'Post found successfully',
             error:false,
             success:true,
             data:{
-                Allposts,
+                updatedPosts,
                 nextCursor,
                 hasMore:Allposts.length === limit
             }

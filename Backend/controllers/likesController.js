@@ -28,7 +28,7 @@ export async function ToggleLikeController(req,res) {
         const isAlreadyLiked = Post.Likes.includes(userId);
          
         if(isAlreadyLiked){
-           await PostModel.findByIdAndUpdate(postId,{$pull:{Likes:userId}}); 
+           Post.Likes.pull(userId);
         }else{
             Post.Likes.push(userId);
         }
@@ -41,7 +41,7 @@ export async function ToggleLikeController(req,res) {
             success:true,
             data:{
                 updatedPost,
-                likes:Post.Likes.length,
+                likes:updatedPost.Likes.length,
                liked :!isAlreadyLiked
             }
         })

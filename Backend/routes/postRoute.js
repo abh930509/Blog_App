@@ -7,7 +7,7 @@ import {allPostsController,mypostsController,createPostController,updatePostCont
 const postRouter = Router();
 
 postRouter.post('/createpost',auth,upload.array("photos",12),createPostController);
-postRouter.get('/allposts',allPostsController);
+postRouter.get('/allposts',auth,allPostsController);
 postRouter.get('/myposts',auth,mypostsController);
 postRouter.put('/updatepost/:postId',auth,upload.array("photos",12),updatePostController);
 postRouter.get('/getpost/:postId',auth,getPostController);

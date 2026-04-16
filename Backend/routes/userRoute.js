@@ -14,6 +14,7 @@ userRouter.post('/signin',loginUserController);
 userRouter.get('/logout',auth,logoutController);
 userRouter.put('/updateuser',auth,updateUserController);
 userRouter.get('/getuser',auth,GetUserController);
+userRouter.get('/userProfile/:userId',auth,getUserProfileController);
 
 userRouter.post('/refresh-token',refreshToken);
 

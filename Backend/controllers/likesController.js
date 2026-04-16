@@ -42,7 +42,7 @@ export async function ToggleLikeController(req,res) {
             data:{
                 updatedPost,
                 likes:updatedPost.Likes.length,
-                 liked: post.Likes.includes(userId),
+                 liked: !isAlreadyLiked,
 
             }
         })

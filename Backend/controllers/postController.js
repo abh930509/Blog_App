@@ -131,7 +131,7 @@ export async function allPostsController(req,res) {
             error:false,
             success:true,
             data:{
-                updatedPosts,
+                Allposts: updatedPosts,
                 nextCursor,
                 hasMore:Allposts.length === limit
             }

@@ -26,6 +26,7 @@ export async function ToggleLikeController(req,res) {
         }
 
         const isAlreadyLiked = Post.Likes.includes(userId);
+        console.log(isAlreadyLiked);
          
         if(isAlreadyLiked){
            Post.Likes.pull(userId);

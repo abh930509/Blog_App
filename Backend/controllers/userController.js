@@ -1,6 +1,7 @@
 import UserModel from "../models/userModel.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import PostModel from "../models/postModel.js";
 import generatedAccessToken from "../utils/generateAccessToken.js";
 import generatedrefreshToken from "../utils/generatedRefreshToken.js";
 

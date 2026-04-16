@@ -54,9 +54,55 @@ export async function ToggleLikeController(req,res) {
             error:true,
             success:false
         })
-    }
-    
+    }    
 }
+
+
+export async function GetLikesController(req,res) {
+    try {
+        const userId =req.userId;
+        const {postId} = req.postId;
+
+        if(!postId){
+            return res.status(400).json({
+                message:"Post id not found",
+                error:true,
+                success:false
+            })
+        }
+       
+        const Post =await PostModel.findById(postId);
+
+        if(!Post){
+            return res.status(400).json({
+                message:"Post not found",
+                error:true,
+                success:false
+            })
+        }
+
+         return json({
+            message:"Likes fetched successfully.",
+            error:false,
+            success:true,
+            data:{
+                liked:Post.Likes.includes(userId),
+                userId,
+            }
+         })
+
+    } catch (error) {
+      return res.status(400).json({
+        message:error.message||error,
+        error:true,
+        success:false
+      })
+    }
+}
+
+
+
+
 
 export async function getLikesController(req,res) {
     try {

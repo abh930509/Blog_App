@@ -3,7 +3,7 @@ import auth from '../middleware/auth.js';
 
 import upload  from "../middleware/multer.js";
 
-import { registerUserController,loginUserController,logoutController,updateUserController,refreshToken,GetUserController } from "../controllers/userController.js";
+import { registerUserController,loginUserController,logoutController,updateUserController,refreshToken,GetUserController,getUserProfileController } from "../controllers/userController.js";
 
 
 

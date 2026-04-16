@@ -171,8 +171,16 @@ const updatedPosts = Allposts.map(post => ({
 export async function  mypostsController(req,res) {
     try {
 
-        const userId =req.userId;
-        const myAllPosts = await PostModel.find({author:userId});
+       const userId =req.userId;
+        const posts = await PostModel.find({author:userId})
+        .populate("author", "name email profilePic")
+        .lean();
+
+        const myAllPosts = posts.map((post) => ({
+            ...post,
+            liked: post.Likes.some((id) => id.toString() === userId.toString()),
+            likesCount: post.Likes.length
+        }));
 
         if(!myAllPosts){
             return res.status(400).json({
@@ -190,6 +198,7 @@ export async function  mypostsController(req,res) {
                 myAllPosts
             }
         })
+
 
     } catch (error) {
         return res.status(400).json({
@@ -272,7 +281,7 @@ export async function  updatePostController(req,res) {
 export async function  getPostController(req,res) {
     try {
         const {postId} =req.params;
-        const userId =req.userId;
+        const userId = req.userId;
 
         if(!postId){
             return res.status(400).json({
@@ -282,7 +291,9 @@ export async function  getPostController(req,res) {
             })
         }
 
-        const post = await PostModel.findById(postId);
+        const post = await PostModel.findById(postId)
+        .populate("author", "name email profilePic")
+        .lean();
 
         if(!post){
             return res.status(400).json({
@@ -292,16 +303,24 @@ export async function  getPostController(req,res) {
             })
         }
 
+        const updatedPost = {
+            ...post,
+            liked: userId ? post.Likes.some((id) => id.toString() === userId.toString()) : false,
+            likesCount: post.Likes.length
+        };
+
         return res.json({
             message:'Post fetched  successfully.',
             error:false,
             success:true,
             data:{
-                post,
+                post: updatedPost,
                 userId,
                 postId
             }
         })
+
+    
 
         
     } catch (error) {

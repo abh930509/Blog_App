@@ -125,7 +125,7 @@ export async function allPostsController(req,res) {
         }
 
         
- const userId = req.userId?._id || req.userId;
+
 
 const updatedPosts = Allposts.map(post => {
 

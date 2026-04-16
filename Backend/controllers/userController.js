@@ -323,3 +323,74 @@ export async function  refreshToken(req,res) {
     })
   }
 }
+
+
+
+export async function getUserProfileController(req, res) {
+  try {
+    const { userId } = req.params;
+    const currentUserId = req.userId;
+    const cursor = req.query.cursor;
+    let limit = parseInt(req.query.limit, 10) || 5;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "User id is required",
+        error: true,
+        success: false,
+      });
+    }
+
+    if (limit > 15) {
+      limit = 15;
+    }
+
+    const userData = await UserModel.findById(userId).select("-password -refresh_token");
+
+    if (!userData) {
+      return res.status(404).json({
+        message: "User not found",
+        error: true,
+        success: false,
+      });
+    }
+
+    const query = { author: userId };
+
+    if (cursor) {
+      query._id = { $lt: cursor };
+    }
+
+    const posts = await PostModel.find(query)
+      .populate("author", "name email")
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .lean();
+
+    const myAllPosts = posts.map((post) => ({
+      ...post,
+      liked: currentUserId ? post.Likes.some((id) => id.toString() === currentUserId.toString()) : false,
+      likesCount: post.Likes.length,
+    }));
+
+    const nextCursor = posts.length ? posts[posts.length - 1]._id : null;
+
+    return res.status(200).json({
+      message: "User profile fetched successfully",
+      error: false,
+      success: true,
+      data: {
+        userData,
+        myAllPosts,
+        nextCursor,
+        hasMore: posts.length === limit,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}

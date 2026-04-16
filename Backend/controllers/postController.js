@@ -125,13 +125,23 @@ export async function allPostsController(req,res) {
         }
 
         
-      
+ const userId = req.userId?._id || req.userId;
 
-const updatedPosts = Allposts.map(post => ({
-  ...post,
-  liked: post.Likes?.some(id => id.equals(userId)),
-  likesCount: post.Likes?.length || 0
-}));
+const updatedPosts = Allposts.map(post => {
+
+  console.log("Likes:", post.Likes);
+  console.log("userId:", userId);
+  console.log("Likes type:", typeof post.Likes[0]);
+  console.log("userId type:", typeof userId);
+
+  return {
+    ...post,
+    liked: post.Likes?.some(
+      id => String(id) === String(userId)
+    ),
+    likesCount: post.Likes?.length || 0
+  }
+});
         
 
         return res.json({

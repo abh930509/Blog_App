@@ -249,44 +249,54 @@ export async function DeleteComments(req,res) {
 
         if(comment.author.toString() !== userId.toString()){
             return res.status(400).json({
-                message:"Unauthorized to delete this  comment.",
+                message:"Unauthorized to delete this comment.",
                 error:true,
                 success:false
             })
         }
 
-        const getAllReplies =async(parentId)=>{
-         const replies = await commentModel.findById(parentId);
-         let ids =replies.map((r)=>r._id);
-          
-         for(const reply of replies ){
-            const nestedReplies = getAllReplies(replies._id);
-            ids =[...ids , ...nestedIds]
-         }
-           return ids;
+        // FIXED FUNCTION
+        const getAllReplies = async (parentId) => {
+
+            const replies = await commentModel.find({ parentId }); // FIXED
+
+            let ids = replies.map((r)=> r._id);
+
+            for(const reply of replies){
+                const nestedReplies = await getAllReplies(reply._id); // FIXED
+                ids = [...ids , ...nestedReplies]; // FIXED
+            }
+
+            return ids;
         };
 
-        const replyIds = getAllReplies(commentId);
+        const replyIds = await getAllReplies(commentId); // FIXED
 
-        if(replyIds.length >0 ){
-            await commentModel.deleteMany({_id : {$in :replyIds}});
+        if(replyIds.length > 0 ){
+            await commentModel.deleteMany({
+                _id : { $in : replyIds }
+            });
         }
 
         if(comment.parentId){
-            await commentModel.findByIdAndUpdate(comment.parentId ,{$pull :{replies :comment._id}})
+            await commentModel.findByIdAndUpdate(
+                comment.parentId,
+                {$pull : { replies : comment._id }}
+            )
         }else{
-            await PostModel.findByIdAndUpdate(comment.postId ,{$pull :{Comments:comment._id}})
+            await PostModel.findByIdAndUpdate(
+                comment.postId,
+                {$pull : { Comments : comment._id }}
+            )
         }
 
-        const deletedComment = await commentModel.findByIdAndDelete(commentId);
+        await commentModel.findByIdAndDelete(commentId);
 
         return res.json({
             message:"Comment Deleted Successfully.",
             error:false,
             success:true
         })
-
-
 
     } catch (error) {
       return res.status(400).json({
@@ -295,9 +305,7 @@ export async function DeleteComments(req,res) {
         success:false
       })   
     }
-}
-
-// toggle likes in comments
+}// toggle likes in comments
 
 export async function ToogleLikesComment(req,res) {
     try {

@@ -87,87 +87,81 @@ export async function createPostController(req,res) {
     
 }
 
+export async function allPostsController(req, res) {
+  try {
+    const cursor = req.query.cursor;
+    let limit = parseInt(req.query.limit) || 20;
 
-export async function allPostsController(req,res) {
-     
-    try {
+    const userId = req.userId;
 
-        const cursor = req.query.cursor;
-        let limit = parseInt(req.query.limit )|| 20;
-       
-              const userId =  req.userId;
+    if (limit > 10) limit = 10;
 
-        console.log(userId);
-        
+    let query = {};
 
-        if(limit>10) limit =10;
-
-        let query ={};;
-
-        if(cursor){
-            query._id ={$lt :cursor}
-        }
-
-      const Allposts = await PostModel.find(query)
-  .populate("author", "name email profilePic")
-  .sort({ createdAt: -1 }).limit(limit).lean();
-
-        
-
-        const nextCursor = Allposts.length ?Allposts[Allposts.length -1]._id:null;
-
-        if(!Allposts){
-            return res.status(400).json({
-                message:'No Post found ',
-                error:true,
-                success:false
-            })
-        }
-
-       
-
-if(!userId){
-  console.log("User ID missing");
-}
-
-const updatedPosts = Allposts.map(post => ({
-  ...post,
-  liked: post.Likes?.some(
-    id => id.toString() === userId?.toString()
-  ),
-  likesCount: post.Likes?.length || 0
-}));
-
-        
-
-
-        
-
-        return res.json({
-            message:'Post found successfully',
-            error:false,
-            success:true,
-            data:{
-                Allposts: updatedPosts,
-                nextCursor,
-                hasMore:Allposts.length === limit
-            }
-        })
-        
-    } catch (error) {
-
-        return res.status(400).json({
-            message:error.message||message,
-            error:true,
-            success:false
-        })
-        
+    if (cursor) {
+      query._id = { $lt: cursor };
     }
-        
 
-    
+    const Allposts = await PostModel.find(query)
+      .populate("author", "name email profilePic")
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .lean();
+
+    const nextCursor = Allposts.length
+      ? Allposts[Allposts.length - 1]._id
+      : null;
+
+    if (!Allposts.length) {
+      return res.status(400).json({
+        message: "No Post found",
+        error: true,
+        success: false,
+      });
+    }
+
+    // GET COMMENTS COUNT
+    const postIds = Allposts.map((post) => post._id);
+
+    const comments = await commentModel
+      .find({ postId: { $in: postIds } })
+      .select("postId")
+      .lean();
+
+    const commentCountMap = {};
+
+    comments.forEach((comment) => {
+      const id = comment.postId.toString();
+      commentCountMap[id] = (commentCountMap[id] || 0) + 1;
+    });
+
+    const updatedPosts = Allposts.map((post) => ({
+      ...post,
+      liked: post.Likes?.some(
+        (id) => id.toString() === userId?.toString()
+      ),
+      likesCount: post.Likes?.length || 0,
+      commentCount: commentCountMap[post._id.toString()] || 0,
+    }));
+
+    return res.json({
+      message: "Post found successfully",
+      error: false,
+      success: true,
+      data: {
+        Allposts: updatedPosts,
+        nextCursor,
+        hasMore: Allposts.length === limit,
+      },
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
 }
-
 export async function  mypostsController(req,res) {
     try {
 

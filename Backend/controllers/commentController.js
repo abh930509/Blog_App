@@ -42,11 +42,22 @@ export async function createCommentController(req, res) {
       });
     }
 
+    // ✅ Only 1 level nested replies allowed
     if (parentId) {
       const parentComment = await commentModel.findById(parentId);
+
       if (!parentComment) {
         return res.status(400).json({
           message: "Parent comment is not found.",
+          error: true,
+          success: false,
+        });
+      }
+
+      // 🔥 Block reply to reply (only 1 level allowed)
+      if (parentComment.parentId) {
+        return res.status(400).json({
+          message: "Only one level reply allowed",
           error: true,
           success: false,
         });
@@ -71,7 +82,11 @@ export async function createCommentController(req, res) {
       Post.Comments.push(savedcomment._id);
       await Post.save();
     }
-   const populatedComment = await savedcomment.populate("author","name email profilePic");
+
+    const populatedComment = await savedcomment.populate(
+      "author",
+      "name email profilePic"
+    );
 
     return res.json({
       message: "Comment Successfully Created",
@@ -79,11 +94,9 @@ export async function createCommentController(req, res) {
       success: true,
       data: {
         savedcomment,
-        populatedComment
+        populatedComment,
       },
     });
-
-
   } catch (error) {
     return res.status(400).json({
       message: error.message || error,
@@ -92,9 +105,6 @@ export async function createCommentController(req, res) {
     });
   }
 }
-
-// get all comments
-
 export async function getAllComment(req,res) {
     try {
         const {postId}= req.params;

@@ -142,7 +142,9 @@ export async function getAllComment(req, res) {
     allComments.forEach((comment) => {
       commentMap[comment._id] = {
         ...comment,
-        liked: comment.likes?.includes(userId),
+       liked: comment.likes?.some(
+  (id) => id.toString() === userId
+),
         likesCount: comment.likes?.length || 0,
         replies: [],
       };

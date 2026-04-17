@@ -42,7 +42,7 @@ export async function createCommentController(req, res) {
       });
     }
 
-    // ✅ Only 1 level nested replies allowed
+    //  Only 1 level nested replies allowed
     if (parentId) {
       const parentComment = await commentModel.findById(parentId);
 
@@ -54,7 +54,7 @@ export async function createCommentController(req, res) {
         });
       }
 
-      // 🔥 Block reply to reply (only 1 level allowed)
+      // Block reply to reply (only 1 level allowed)
       if (parentComment.parentId) {
         return res.status(400).json({
           message: "Only one level reply allowed",
@@ -138,6 +138,7 @@ export async function getAllComment(req, res) {
     const roots = [];
 
     // First pass
+    console.log("userId" ,userId);
     allComments.forEach((comment) => {
       commentMap[comment._id] = {
         ...comment,

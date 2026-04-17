@@ -108,7 +108,7 @@ export async function createCommentController(req, res) {
 export async function getAllComment(req, res) {
   try {
     const { postId } = req.params;
-    const userId = req.userId; // IMPORTANT
+    const userId = req.userId; 
 
     if (!postId) {
       return res.status(400).json({
@@ -162,6 +162,7 @@ export async function getAllComment(req, res) {
         roots.push(commentMap[comment._id]);
       }
     });
+    console.log(allComments);
 
     return res.json({
       message: "Comment fetched Successfully.",

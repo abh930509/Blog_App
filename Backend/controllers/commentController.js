@@ -71,7 +71,7 @@ export async function createCommentController(req, res) {
       Post.Comments.push(savedcomment._id);
       await Post.save();
     }
-   const populatedComment = await savedcomment.populate("author","name email");
+   const populatedComment = await savedcomment.populate("author","name email profilePic");
 
     return res.json({
       message: "Comment Successfully Created",
@@ -97,7 +97,7 @@ export async function createCommentController(req, res) {
 
 export async function getAllComment(req,res) {
     try {
-        const {postId}= req.body;
+        const {postId}= req.params;
         
         if(!postId){
             return res.status(400).json({
@@ -117,7 +117,11 @@ export async function getAllComment(req,res) {
             })
         }
 
-        const allComments = await commentModel.findById(postId).populate("author","name email ").sort({createdAt:1}).lean();
+        const allComments = await commentModel
+          .find({ postId })
+          .populate("author", "name email profilePic")
+          .sort({ createdAt: 1 })
+          .lean();
 
         const commentMap ={};
         const roots=[];
@@ -129,12 +133,13 @@ export async function getAllComment(req,res) {
         allComments.forEach((comment) => {
             if(comment.parentId){
                 if(commentMap[comment.parentId]){
-                    commentMap[comment.parentId]= replies.push(commentMap[comment._id])
-                }else{
-                roots.push(commentMap[comment._id])
+                    commentMap[comment.parentId].replies.push(commentMap[comment._id]);
+                } else {
+                    roots.push(commentMap[comment._id]);
+                }
+            } else {
+                roots.push(commentMap[comment._id]);
             }
-            }
-            
         });
 
         return res.json({
@@ -298,6 +303,7 @@ export async function ToogleLikesComment(req,res) {
     try {
         
         const {commentId} = req.params;
+        const userId = req.userId;
 
         if(!commentId){
             return res.status(400).json({
@@ -326,7 +332,7 @@ export async function ToogleLikesComment(req,res) {
             comment.likes.push(userId);
          }
 
-        const updatedComments =comment.save();
+        const updatedComments = await comment.save();
 
         return res.json({
             message:isAlreadyLiked ?"Like Removed ":"Liked Comment",
@@ -335,7 +341,7 @@ export async function ToogleLikesComment(req,res) {
             data:{
                 updatedComments,
                likes:comment.likes.length,
-               liked :isAlreadyLiked
+               liked :!isAlreadyLiked
             }
         })
 

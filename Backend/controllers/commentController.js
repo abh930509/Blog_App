@@ -105,70 +105,78 @@ export async function createCommentController(req, res) {
     });
   }
 }
-export async function getAllComment(req,res) {
-    try {
-        const {postId}= req.params;
-        
-        if(!postId){
-            return res.status(400).json({
-                message:"Post Id is not found",
-                error:true,
-                success:false
-            })
-        }
+export async function getAllComment(req, res) {
+  try {
+    const { postId } = req.params;
+    const userId = req.userId; // IMPORTANT
 
-        const Post = await PostModel.findById(postId);
-
-        if(!Post ){
-            return res.status(400).json({
-                message:"Post not Found",
-                error:true,
-                success:false
-            })
-        }
-
-        const allComments = await commentModel
-          .find({ postId })
-          .populate("author", "name email profilePic")
-          .sort({ createdAt: 1 })
-          .lean();
-
-        const commentMap ={};
-        const roots=[];
-
-        allComments.forEach((comment)=> {
-             commentMap[comment._id]={...comment, replies:[]}
-        });
-
-        allComments.forEach((comment) => {
-            if(comment.parentId){
-                if(commentMap[comment.parentId]){
-                    commentMap[comment.parentId].replies.push(commentMap[comment._id]);
-                } else {
-                    roots.push(commentMap[comment._id]);
-                }
-            } else {
-                roots.push(commentMap[comment._id]);
-            }
-        });
-
-        return res.json({
-            message:"Comment fetched Successfully.",
-            error:false,
-            success:true,
-            data:roots
-        })
-
-    } catch (error) {
-          return res.status(400).json({
-            message:error.message || error,
-            error:true,
-            success:false
-          })
+    if (!postId) {
+      return res.status(400).json({
+        message: "Post Id is not found",
+        error: true,
+        success: false,
+      });
     }
-}
 
-// update comments
+    const Post = await PostModel.findById(postId);
+
+    if (!Post) {
+      return res.status(400).json({
+        message: "Post not Found",
+        error: true,
+        success: false,
+      });
+    }
+
+    const allComments = await commentModel
+      .find({ postId })
+      .populate("author", "name email profilePic")
+      .sort({ createdAt: 1 })
+      .lean();
+
+    const commentMap = {};
+    const roots = [];
+
+    // First pass
+    allComments.forEach((comment) => {
+      commentMap[comment._id] = {
+        ...comment,
+        liked: comment.likes?.includes(userId),
+        likesCount: comment.likes?.length || 0,
+        replies: [],
+      };
+    });
+
+    // Second pass
+    allComments.forEach((comment) => {
+      if (comment.parentId) {
+        if (commentMap[comment.parentId]) {
+          commentMap[comment.parentId].replies.push(
+            commentMap[comment._id]
+          );
+        } else {
+          roots.push(commentMap[comment._id]);
+        }
+      } else {
+        roots.push(commentMap[comment._id]);
+      }
+    });
+
+    return res.json({
+      message: "Comment fetched Successfully.",
+      error: false,
+      success: true,
+      data: roots,
+    });
+
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}// update comments
 
 export async function UpdateComment(req,res) {
     try {
